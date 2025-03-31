@@ -5,7 +5,7 @@ import (
 
 	"github.com/AdiEcho/go-steam/v3/protocol"
 	"github.com/AdiEcho/go-steam/v3/protocol/gamecoordinator"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 	"google.golang.org/protobuf/proto"
 )
@@ -35,7 +35,7 @@ func (g *GameCoordinator) HandlePacket(packet *protocol.Packet) {
 		return
 	}
 
-	msg := new(protobuf.CMsgGCClient)
+	msg := new(steam.CMsgGCClient)
 	packet.ReadProtoMsg(msg)
 
 	p, err := gamecoordinator.NewGCPacket(msg)
@@ -58,7 +58,7 @@ func (g *GameCoordinator) Write(msg gamecoordinator.IGCMsg) {
 		msgType = msgType | 0x80000000 // mask with protoMask
 	}
 
-	g.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientToGC, &protobuf.CMsgGCClient{
+	g.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientToGC, &steam.CMsgGCClient{
 		Msgtype: proto.Uint32(msgType),
 		Appid:   proto.Uint32(msg.GetAppId()),
 		Payload: buf.Bytes(),
@@ -67,14 +67,14 @@ func (g *GameCoordinator) Write(msg gamecoordinator.IGCMsg) {
 
 // Sets you in the given games. Specify none to quit all games.
 func (g *GameCoordinator) SetGamesPlayed(appIds ...uint64) {
-	games := make([]*protobuf.CMsgClientGamesPlayed_GamePlayed, 0)
+	games := make([]*steam.CMsgClientGamesPlayed_GamePlayed, 0)
 	for _, appId := range appIds {
-		games = append(games, &protobuf.CMsgClientGamesPlayed_GamePlayed{
+		games = append(games, &steam.CMsgClientGamesPlayed_GamePlayed{
 			GameId: proto.Uint64(appId),
 		})
 	}
 
-	g.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientGamesPlayed, &protobuf.CMsgClientGamesPlayed{
+	g.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientGamesPlayed, &steam.CMsgClientGamesPlayed{
 		GamesPlayed: games,
 	}))
 }

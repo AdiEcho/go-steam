@@ -2,8 +2,9 @@ package tradeoffer
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -310,7 +311,7 @@ func (c *Client) GetTradeReceipt(tradeId uint64) ([]*TradeReceiptItem, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -343,7 +344,7 @@ func (c *Client) getEscrowDuration(queryUrl string) (*EscrowDuration, error) {
 		return nil, fmt.Errorf("failed to retrieve escrow duration: %v", err)
 	}
 	defer resp.Body.Close()
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -438,7 +439,8 @@ func withRetry(f func() error, retryCount int, retryDelay time.Duration) error {
 		i++
 		if err := f(); err != nil {
 			// If we got steam error do not retry
-			if _, ok := err.(*SteamError); ok {
+			var steamError *SteamError
+			if errors.As(err, &steamError) {
 				return err
 			}
 			if i == retryCount {

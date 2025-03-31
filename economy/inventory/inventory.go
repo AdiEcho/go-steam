@@ -182,8 +182,8 @@ type AppInfo struct {
 }
 
 type Tag struct {
-	InternalName string `json:internal_name`
+	InternalName string `json:"internal_name"`
 	Name         string
 	Category     string
-	CategoryName string `json:category_name`
+	CategoryName string `json:"category_name"`
 }

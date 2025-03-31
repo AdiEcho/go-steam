@@ -2,7 +2,7 @@ package steam
 
 import (
 	"github.com/AdiEcho/go-steam/v3/protocol"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 )
 
@@ -34,7 +34,7 @@ const (
 )
 
 func (n *Notifications) handleClientUserNotifications(packet *protocol.Packet) {
-	msg := new(protobuf.CMsgClientUserNotifications)
+	msg := new(steam.CMsgClientUserNotifications)
 	packet.ReadProtoMsg(msg)
 
 	for _, notification := range msg.GetNotifications() {

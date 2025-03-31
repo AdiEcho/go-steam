@@ -5,8 +5,7 @@ package steamlang
 
 import (
 	"encoding/binary"
-	"errors"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/rwu"
 	"github.com/AdiEcho/go-steam/v3/steamid"
 	"google.golang.org/protobuf/proto"
@@ -372,13 +371,13 @@ func (d *ExtendedClientMsgHdr) Deserialize(r io.Reader) error {
 type MsgHdrProtoBuf struct {
 	Msg          EMsg
 	HeaderLength int32
-	Proto        *protobuf.CMsgProtoBufHeader
+	Proto        *steam.CMsgProtoBufHeader
 }
 
 func NewMsgHdrProtoBuf() *MsgHdrProtoBuf {
 	return &MsgHdrProtoBuf{
 		Msg:   EMsg_Invalid,
-		Proto: new(protobuf.CMsgProtoBufHeader),
+		Proto: new(steam.CMsgProtoBufHeader),
 	}
 }
 
@@ -412,10 +411,7 @@ func (d *MsgHdrProtoBuf) Deserialize(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if d.HeaderLength < 0 {
-		return errors.New("negative header length")
-	}
-	buf1 := make([]byte, d.HeaderLength, d.HeaderLength)
+	buf1 := make([]byte, d.HeaderLength)
 	_, err = io.ReadFull(r, buf1)
 	if err != nil {
 		return err
@@ -427,13 +423,13 @@ func (d *MsgHdrProtoBuf) Deserialize(r io.Reader) error {
 type MsgGCHdrProtoBuf struct {
 	Msg          uint32
 	HeaderLength int32
-	Proto        *protobuf.CMsgProtoBufHeader
+	Proto        *steam.CMsgProtoBufHeader
 }
 
 func NewMsgGCHdrProtoBuf() *MsgGCHdrProtoBuf {
 	return &MsgGCHdrProtoBuf{
 		Msg:   0,
-		Proto: new(protobuf.CMsgProtoBufHeader),
+		Proto: new(steam.CMsgProtoBufHeader),
 	}
 }
 
@@ -467,7 +463,7 @@ func (d *MsgGCHdrProtoBuf) Deserialize(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	buf1 := make([]byte, d.HeaderLength, d.HeaderLength)
+	buf1 := make([]byte, d.HeaderLength)
 	_, err = io.ReadFull(r, buf1)
 	if err != nil {
 		return err
@@ -836,7 +832,7 @@ type MsgClientP2PIntroducerMessage struct {
 
 func NewMsgClientP2PIntroducerMessage() *MsgClientP2PIntroducerMessage {
 	return &MsgClientP2PIntroducerMessage{
-		Data: make([]uint8, 1450, 1450),
+		Data: make([]uint8, 1450),
 	}
 }
 

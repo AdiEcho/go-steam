@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"github.com/AdiEcho/go-steam/v3/cryptoutil"
 	"github.com/AdiEcho/go-steam/v3/protocol"
@@ -73,7 +74,7 @@ func (c *tcpConnection) Read() (*protocol.Packet, error) {
 
 	buf := make([]byte, packetLen, packetLen)
 	_, err = io.ReadFull(c.conn, buf)
-	if err == io.ErrUnexpectedEOF {
+	if errors.Is(err, io.ErrUnexpectedEOF) {
 		return nil, io.EOF
 	}
 	if err != nil {

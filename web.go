@@ -13,7 +13,7 @@ import (
 
 	"github.com/AdiEcho/go-steam/v3/cryptoutil"
 	"github.com/AdiEcho/go-steam/v3/protocol"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 	"google.golang.org/protobuf/proto"
 )
@@ -92,7 +92,7 @@ func (w *Web) apiLogOn() error {
 	if resp.StatusCode == 401 {
 		// our web login key has expired, request a new one
 		atomic.StoreUint32(&w.relogOnNonce, 1)
-		w.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientRequestWebAPIAuthenticateUserNonce, new(protobuf.CMsgClientRequestWebAPIAuthenticateUserNonce)))
+		w.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientRequestWebAPIAuthenticateUserNonce, new(steam.CMsgClientRequestWebAPIAuthenticateUserNonce)))
 		return nil
 	} else if resp.StatusCode != 200 {
 		return errors.New("steam.Web.apiLogOn: request failed with status " + resp.Status)
@@ -117,10 +117,10 @@ func (w *Web) apiLogOn() error {
 }
 
 func (w *Web) handleNewLoginKey(packet *protocol.Packet) {
-	msg := new(protobuf.CMsgClientNewLoginKey)
+	msg := new(steam.CMsgClientNewLoginKey)
 	packet.ReadProtoMsg(msg)
 
-	w.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientNewLoginKeyAccepted, &protobuf.CMsgClientNewLoginKeyAccepted{
+	w.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientNewLoginKeyAccepted, &steam.CMsgClientNewLoginKeyAccepted{
 		UniqueId: proto.Uint32(msg.GetUniqueId()),
 	}))
 
@@ -132,7 +132,7 @@ func (w *Web) handleNewLoginKey(packet *protocol.Packet) {
 
 func (w *Web) handleAuthNonceResponse(packet *protocol.Packet) {
 	// this has to be the best name for a message yet.
-	msg := new(protobuf.CMsgClientRequestWebAPIAuthenticateUserNonceResponse)
+	msg := new(steam.CMsgClientRequestWebAPIAuthenticateUserNonceResponse)
 	packet.ReadProtoMsg(msg)
 	w.webLoginKey = msg.GetWebapiAuthenticateUserNonce()
 

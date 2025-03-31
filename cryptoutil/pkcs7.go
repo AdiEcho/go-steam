@@ -10,7 +10,7 @@ import (
 func padPKCS7WithIV(src []byte) []byte {
 	missing := aes.BlockSize - (len(src) % aes.BlockSize)
 	newSize := len(src) + aes.BlockSize + missing
-	dest := make([]byte, newSize, newSize)
+	dest := make([]byte, newSize)
 	copy(dest[aes.BlockSize:], src)
 
 	padding := byte(missing)

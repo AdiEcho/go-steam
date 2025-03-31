@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"golang.org/x/net/proxy"
 	"hash/crc32"
-	"io/ioutil"
+	"io"
 	"net"
 	"sync"
 	"sync/atomic"
@@ -17,7 +17,7 @@ import (
 	"github.com/AdiEcho/go-steam/v3/cryptoutil"
 	"github.com/AdiEcho/go-steam/v3/netutil"
 	"github.com/AdiEcho/go-steam/v3/protocol"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 	"github.com/AdiEcho/go-steam/v3/steamid"
 )
@@ -209,7 +209,7 @@ func (c *Client) ConnectToBind(addr *netutil.PortAddr, local *net.TCPAddr) error
 func (c *Client) Disconnect() {
 	if c.Connected() {
 		// Gracefully logout, we know we have a connection
-		c.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientLogOff, new(protobuf.CMsgClientLogOff)))
+		c.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientLogOff, new(steam.CMsgClientLogOff)))
 		time.Sleep(time.Second * 3)
 	}
 
@@ -317,7 +317,7 @@ func (c *Client) heartbeatLoop(seconds time.Duration) {
 			if !ok {
 				return
 			}
-			c.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientHeartBeat, new(protobuf.CMsgClientHeartBeat)))
+			c.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientHeartBeat, new(steam.CMsgClientHeartBeat)))
 		case <-time.After(5 * time.Minute):
 			// failed to get heartbeat tick after 5 minutes, returning early
 			return
@@ -387,7 +387,7 @@ func (c *Client) handleChannelEncryptResult(packet *protocol.Packet) {
 }
 
 func (c *Client) handleMulti(packet *protocol.Packet) {
-	body := new(protobuf.CMsgMulti)
+	body := new(steam.CMsgMulti)
 	packet.ReadProtoMsg(body)
 
 	payload := body.GetMessageBody()
@@ -399,7 +399,7 @@ func (c *Client) handleMulti(packet *protocol.Packet) {
 			return
 		}
 
-		payload, err = ioutil.ReadAll(r)
+		payload, err = io.ReadAll(r)
 		if err != nil {
 			c.Errorf("handleMulti: Error while decompressing: %v", err)
 			return

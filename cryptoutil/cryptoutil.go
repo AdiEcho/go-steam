@@ -10,12 +10,12 @@ import (
 // with a random IV prepended using AES/ECB/None.
 func SymmetricEncrypt(ciph cipher.Block, src []byte) []byte {
 	// get a random IV and ECB encrypt it
-	iv := make([]byte, aes.BlockSize, aes.BlockSize)
+	iv := make([]byte, aes.BlockSize)
 	_, err := rand.Read(iv)
 	if err != nil {
 		panic(err)
 	}
-	encryptedIv := make([]byte, aes.BlockSize, aes.BlockSize)
+	encryptedIv := make([]byte, aes.BlockSize)
 	newECBEncrypter(ciph).CryptBlocks(encryptedIv, iv)
 
 	// pad it, copy the IV to the first 16 bytes and encrypt the rest with CBC

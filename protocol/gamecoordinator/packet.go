@@ -4,7 +4,7 @@ import (
 	"bytes"
 
 	"github.com/AdiEcho/go-steam/v3/protocol"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 	"google.golang.org/protobuf/proto"
 )
@@ -19,7 +19,7 @@ type GCPacket struct {
 	TargetJobId protocol.JobId
 }
 
-func NewGCPacket(wrapper *protobuf.CMsgGCClient) (*GCPacket, error) {
+func NewGCPacket(wrapper *steam.CMsgGCClient) (*GCPacket, error) {
 	packet := &GCPacket{
 		AppId:   wrapper.GetAppid(),
 		MsgType: wrapper.GetMsgtype(),

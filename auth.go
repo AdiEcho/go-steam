@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/AdiEcho/go-steam/v3/protocol"
-	"github.com/AdiEcho/go-steam/v3/protocol/protobuf"
+	"github.com/AdiEcho/go-steam/v3/protocol/protobuf/steam"
 	"github.com/AdiEcho/go-steam/v3/protocol/steamlang"
 	"github.com/AdiEcho/go-steam/v3/steamid"
 	"google.golang.org/protobuf/proto"
@@ -56,7 +56,7 @@ func (a *Auth) LogOn(details *LogOnDetails) {
 		panic("must set at least refresh token or the username/password")
 	}
 
-	logon := new(protobuf.CMsgClientLogon)
+	logon := new(steam.CMsgClientLogon)
 	logon.ClientLanguage = proto.String("english")
 	logon.ProtocolVersion = proto.Uint32(steamlang.MsgClientLogon_CurrentProtocol)
 	logon.ClientOsType = proto.Uint32(20) // Windows 11
@@ -115,7 +115,7 @@ func (a *Auth) handleLogOnResponse(packet *protocol.Packet) {
 		return
 	}
 
-	body := new(protobuf.CMsgClientLogonResponse)
+	body := new(steam.CMsgClientLogonResponse)
 	msg := packet.ReadProtoMsg(body)
 
 	result := steamlang.EResult(body.GetEresult())
@@ -155,9 +155,9 @@ func (a *Auth) handleLogOnResponse(packet *protocol.Packet) {
 }
 
 func (a *Auth) handleLoginKey(packet *protocol.Packet) {
-	body := new(protobuf.CMsgClientNewLoginKey)
+	body := new(steam.CMsgClientNewLoginKey)
 	packet.ReadProtoMsg(body)
-	a.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientNewLoginKeyAccepted, &protobuf.CMsgClientNewLoginKeyAccepted{
+	a.client.Write(protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientNewLoginKeyAccepted, &steam.CMsgClientNewLoginKeyAccepted{
 		UniqueId: proto.Uint32(body.GetUniqueId()),
 	}))
 	a.client.Emit(&LoginKeyEvent{
@@ -169,7 +169,7 @@ func (a *Auth) handleLoginKey(packet *protocol.Packet) {
 func (a *Auth) handleLoggedOff(packet *protocol.Packet) {
 	result := steamlang.EResult_Invalid
 	if packet.IsProto {
-		body := new(protobuf.CMsgClientLoggedOff)
+		body := new(steam.CMsgClientLoggedOff)
 		packet.ReadProtoMsg(body)
 		result = steamlang.EResult(body.GetEresult())
 	} else {
@@ -181,13 +181,13 @@ func (a *Auth) handleLoggedOff(packet *protocol.Packet) {
 }
 
 func (a *Auth) handleUpdateMachineAuth(packet *protocol.Packet) {
-	body := new(protobuf.CMsgClientUpdateMachineAuth)
+	body := new(steam.CMsgClientUpdateMachineAuth)
 	packet.ReadProtoMsg(body)
 	hash := sha1.New()
 	hash.Write(packet.Data)
 	sha := hash.Sum(nil)
 
-	msg := protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientUpdateMachineAuthResponse, &protobuf.CMsgClientUpdateMachineAuthResponse{
+	msg := protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientUpdateMachineAuthResponse, &steam.CMsgClientUpdateMachineAuthResponse{
 		ShaFile: sha,
 	})
 	msg.SetTargetJobId(packet.SourceJobId)
@@ -197,7 +197,7 @@ func (a *Auth) handleUpdateMachineAuth(packet *protocol.Packet) {
 }
 
 func (a *Auth) handleAccountInfo(packet *protocol.Packet) {
-	body := new(protobuf.CMsgClientAccountInfo)
+	body := new(steam.CMsgClientAccountInfo)
 	packet.ReadProtoMsg(body)
 	a.client.Emit(&AccountInfoEvent{
 		PersonaName:          body.GetPersonaName(),
