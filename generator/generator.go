@@ -171,6 +171,7 @@ var csgoProtoFiles = map[string]string{
 	"gcsystemmsgs.proto":           "system.pb.go",
 	"netmessages.proto":            "net.pb.go",
 	"network_connection.proto":     "networkconnection.pb.go",
+	"networkbasetypes.proto":       "networkbasetypes.pb.go",
 	"steammessages.proto":          "steam.pb.go",
 	"uifontfile_format.proto":      "uifontfile.pb.go",
 }
