@@ -1,7 +1,6 @@
 package steam
 
 import (
-	"crypto/sha1"
 	"sync/atomic"
 	"time"
 
@@ -46,8 +45,7 @@ type LogOnDetails struct {
 // LogOn with the given details. You can either specify a username/password/2FA code OR a refresh token.
 //
 // If you fail to provide a 2FA/token entry then Steam will send you an authcode. Then you have to login again,
-// this time with the authcode. Shortly after logging in, you'll receive a MachineAuthUpdateEvent with a hash which
-// allows you to login without using an authcode in the future.
+// this time with the authcode.
 //
 // If you don't use Steam Guard, username and password are enough for the first login. Subsequent logins will
 // require a refresh token OR sentry (if it has Steam Guard disabled)
@@ -102,8 +100,6 @@ func (a *Auth) HandlePacket(packet *protocol.Packet) {
 	case steamlang.EMsg_ClientSessionToken:
 	case steamlang.EMsg_ClientLoggedOff:
 		a.handleLoggedOff(packet)
-	case steamlang.EMsg_ClientUpdateMachineAuth:
-		a.handleUpdateMachineAuth(packet)
 	case steamlang.EMsg_ClientAccountInfo:
 		a.handleAccountInfo(packet)
 	}
@@ -178,22 +174,6 @@ func (a *Auth) handleLoggedOff(packet *protocol.Packet) {
 		result = body.Result
 	}
 	a.client.Emit(&LoggedOffEvent{Result: result})
-}
-
-func (a *Auth) handleUpdateMachineAuth(packet *protocol.Packet) {
-	body := new(protobuf.CMsgClientUpdateMachineAuth)
-	packet.ReadProtoMsg(body)
-	hash := sha1.New()
-	hash.Write(packet.Data)
-	sha := hash.Sum(nil)
-
-	msg := protocol.NewClientMsgProtobuf(steamlang.EMsg_ClientUpdateMachineAuthResponse, &protobuf.CMsgClientUpdateMachineAuthResponse{
-		ShaFile: sha,
-	})
-	msg.SetTargetJobId(packet.SourceJobId)
-	a.client.Write(msg)
-
-	a.client.Emit(&MachineAuthUpdateEvent{sha})
 }
 
 func (a *Auth) handleAccountInfo(packet *protocol.Packet) {

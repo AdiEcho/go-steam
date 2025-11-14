@@ -38,10 +38,6 @@ type LoggedOffEvent struct {
 	Result steamlang.EResult
 }
 
-type MachineAuthUpdateEvent struct {
-	Hash []byte
-}
-
 type AccountInfoEvent struct {
 	PersonaName          string
 	Country              string

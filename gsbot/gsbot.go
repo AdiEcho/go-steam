@@ -47,10 +47,9 @@ func Default() *GsBot {
 // If you're logging on for the first time Steam may require an authcode. You can then
 // connect again with the new logon details.
 type Auth struct {
-	bot             *GsBot
-	details         *steam.LogOnDetails
-	sentryPath      string
-	machineAuthHash []byte
+	bot        *GsBot
+	details    *steam.LogOnDetails
+	sentryPath string
 }
 
 func NewAuth(bot *GsBot, details *steam.LogOnDetails, sentryPath string) *Auth {
@@ -78,12 +77,6 @@ func (a *Auth) HandleEvent(event interface{}) {
 		a.LogOn()
 	case *steam.LoggedOnEvent:
 		a.bot.Log.Printf("Logged on (%v) with SteamId %v and account flags %v", e.Result, e.ClientSteamId, e.AccountFlags)
-	case *steam.MachineAuthUpdateEvent:
-		a.machineAuthHash = e.Hash
-		err := ioutil.WriteFile(a.sentryPath, e.Hash, 0666)
-		if err != nil {
-			panic(err)
-		}
 	case *steam.LoginKeyEvent:
 		a.bot.Log.Printf("New LoginKey: %v\n", e.LoginKey)
 	case *steam.LogOnFailedEvent:

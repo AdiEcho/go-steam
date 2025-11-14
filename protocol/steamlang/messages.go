@@ -5,7 +5,6 @@ package steamlang
 
 import (
 	"encoding/binary"
-	"errors"
 	"github.com/Philipp15b/go-steam/v3/protocol/protobuf"
 	"github.com/Philipp15b/go-steam/v3/rwu"
 	"github.com/Philipp15b/go-steam/v3/steamid"
@@ -412,9 +411,6 @@ func (d *MsgHdrProtoBuf) Deserialize(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	if d.HeaderLength < 0 {
-		return errors.New("negative header length")
-	}
 	buf1 := make([]byte, d.HeaderLength, d.HeaderLength)
 	_, err = io.ReadFull(r, buf1)
 	if err != nil {
@@ -668,7 +664,7 @@ func (d *MsgChannelEncryptResult) Deserialize(r io.Reader) error {
 
 const (
 	MsgClientLogon_ObfuscationMask                                      uint32 = 0xBAADF00D
-	MsgClientLogon_CurrentProtocol                                      uint32 = 65580
+	MsgClientLogon_CurrentProtocol                                      uint32 = 65581
 	MsgClientLogon_ProtocolVerMajorMask                                 uint32 = 0xFFFF0000
 	MsgClientLogon_ProtocolVerMinorMask                                 uint32 = 0xFFFF
 	MsgClientLogon_ProtocolVerMinorMinGameServers                       uint16 = 4

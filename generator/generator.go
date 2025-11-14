@@ -126,7 +126,6 @@ var clientProtoFiles = map[string]string{
 	"steammessages_client_objects.proto":                "unified/client_objects.pb.go",
 	"steammessages_cloud.steamclient.proto":             "unified/cloud.pb.go",
 	"steammessages_credentials.steamclient.proto":       "unified/credentials.pb.go",
-	"steammessages_deviceauth.steamclient.proto":        "unified/deviceauth.pb.go",
 	"steammessages_gamenotifications.steamclient.proto": "unified/gamenotifications.pb.go",
 	"steammessages_offline.steamclient.proto":           "unified/offline.pb.go",
 	"steammessages_parental.steamclient.proto":          "unified/parental.pb.go",
@@ -148,16 +147,18 @@ var tf2ProtoFiles = map[string]string{
 	"gcsdk_gcmessages.proto": "gcsdk.pb.go",
 	"tf_gcmessages.proto":    "tf.pb.go",
 	"gcsystemmsgs.proto":     "system.pb.go",
-	"valveextensions.proto":  "valveextensions.pb.go",
 }
 
 var dotaProtoFiles = map[string]string{
-	"base_gcmessages.proto":   "base.pb.go",
-	"econ_shared_enums.proto": "econ_shared_enum.pb.go",
-	"econ_gcmessages.proto":   "econ.pb.go",
-	"gcsdk_gcmessages.proto":  "gcsdk.pb.go",
-	"gcsystemmsgs.proto":      "system.pb.go",
-	"steammessages.proto":     "steam.pb.go",
+	"base_gcmessages.proto":                          "base.pb.go",
+	"econ_shared_enums.proto":                        "econ_shared_enum.pb.go",
+	"econ_gcmessages.proto":                          "econ.pb.go",
+	"gcsdk_gcmessages.proto":                         "gcsdk.pb.go",
+	"gcsystemmsgs.proto":                             "system.pb.go",
+	"steammessages.proto":                            "steam.pb.go",
+	"valveextensions.proto":                          "valveextensions.pb.go",
+	"steammessages_unified_base.steamworkssdk.proto": "steam.steamworkssdk.pb.go",
+	"steammessages_steamlearn.steamworkssdk.proto":   "steam.steamlearn.pb.go",
 }
 
 var csgoProtoFiles = map[string]string{
