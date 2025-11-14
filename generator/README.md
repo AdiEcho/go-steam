@@ -3,7 +3,8 @@
 We generate Go code from SteamKit protocol descriptors, namely `steamlang` files and protocol buffer files.
 
 ## Dependencies
-1. Get SteamKit submodule: `git submodule update --init --recursive`.
+1. Update SteamKit/Protobufs submodule: `git submodule update --init --force --remote`.
+
 2. Install [`protoc`](https://developers.google.com/protocol-buffers/docs/downloads), the protocol buffer compiler.
 
     ```
@@ -23,3 +24,8 @@ We generate Go code from SteamKit protocol descriptors, namely `steamlang` files
 ## Execute generator
 
 Execute `go run generator.go clean proto steamlang` to clean build files, then build protocol buffer files and then build steamlang files.
+
+IMPORTANT: Since the generator relies upon relative files, you MUST use `go run` in its directory instead of `go build`
+
+NOTE: You will commonly find missing proto files in the generation when Valve changes proto imports (ie. `unable to determine Go import path for <.....proto>`). 
+You can remedy this by adding the relevant proto file to the corresponding generator map (ie. `clientProtoFiles` or `csgoProtoFiles`)
