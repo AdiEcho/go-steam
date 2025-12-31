@@ -13,10 +13,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Philipp15b/go-steam/v3/community"
-	"github.com/Philipp15b/go-steam/v3/economy/inventory"
-	"github.com/Philipp15b/go-steam/v3/netutil"
-	"github.com/Philipp15b/go-steam/v3/steamid"
+	"github.com/adiecho/go-steam/v3/community"
+	"github.com/adiecho/go-steam/v3/economy/inventory"
+	"github.com/adiecho/go-steam/v3/netutil"
+	"github.com/adiecho/go-steam/v3/steamid"
 )
 
 const tradeUrl = "https://steamcommunity.com/trade/%d/"

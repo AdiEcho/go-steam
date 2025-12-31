@@ -4,10 +4,10 @@ Provides access to TF2 Game Coordinator functionality.
 package tf2
 
 import (
-	"github.com/Philipp15b/go-steam/v3"
-	"github.com/Philipp15b/go-steam/v3/protocol/gamecoordinator"
-	"github.com/Philipp15b/go-steam/v3/tf2/protocol"
-	"github.com/Philipp15b/go-steam/v3/tf2/protocol/protobuf"
+	"github.com/adiecho/go-steam/v3"
+	"github.com/adiecho/go-steam/v3/protocol/gamecoordinator"
+	"github.com/adiecho/go-steam/v3/tf2/protocol"
+	"github.com/adiecho/go-steam/v3/tf2/protocol/protobuf"
 )
 
 const AppId = 440
